@@ -2,6 +2,7 @@ package main
 
 import (
 	"api/controllers"
+	"api/helpers"
 	"net/http"
 	"os"
 
@@ -15,6 +16,7 @@ func SetupRouter() *gin.Engine {
 	r.SetTrustedProxies(nil)
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowAllOrigins = true
+	corsConfig.AllowHeaders = []string{"Authorization", "Content-Type", "Origin"}
 	r.Use(cors.New(corsConfig))
 
 	r.GET("/ping", func(c *gin.Context) {
@@ -23,11 +25,18 @@ func SetupRouter() *gin.Engine {
 		})
 	})
 
-	Carts := controllers.NewCarts()
+	Users := controllers.NewUsers()
+	Orders := controllers.NewOrders()
 	Transactions := controllers.NewTransactions()
-	r.POST("/api/v1/cart", Carts.CreateCart)
+	r.POST("/api/v1/user", Users.CreateUser)
+	r.POST("/api/v1/login", Users.AuthenticateUser)
 	r.POST("/api/v1/notify", Transactions.CreateTransaction)
 	r.POST("/api/v1/callback", controllers.GetCallback)
+
+	r.Use(helpers.VerifyToken)
+	r.GET("/api/v1/user", Users.GetUser)
+	r.GET("/api/v1/order", Users.GetOrders)
+	r.POST("/api/v1/order", Orders.CreateOrder)
 	return r
 }
 
