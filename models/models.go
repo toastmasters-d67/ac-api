@@ -2,7 +2,6 @@ package models
 
 import (
 	"gorm.io/gorm"
-	"time"
 )
 
 type Database struct {
@@ -37,27 +36,10 @@ type Item struct {
 	Email       string `json:"email"`
 	Description string `json:"description"`
 	Url         string `json:"url"`
-}
-
-type Order struct {
-	ID        int64     // primary key, column name is `id`"
-	Title     string    // column name is `title`"
-	Amount    int       // column name is `amount`"
-	Email     string    // column name is `email`"
-	CreatedAt time.Time // column name is `created_at`"
-	UpdatedAt time.Time // column name is `updated_at`"
-}
-
-func (model *Order) BeforeCreate(db *gorm.DB) (err error) {
-	model.CreatedAt = time.Now()
-	model.CreatedAt = time.Now()
-	return
-}
-
-type AcOrder struct {
-	ID          int64     // primary key, column name is `id`"
-	State       string    // column name is `name`"
-	Amount      int       // column name is `age`"
-	UserId      int       // column name is `age`"
-	createdTime time.Time // column name is `created_at`"
+	Callback    string `json:"callback"`
+	Early       int    `json:"early"`
+	Double      int    `json:"double"`
+	First       int    `json:"first"`
+	Second      int    `json:"second"`
+	Banquet     int    `json:"banquet"`
 }
