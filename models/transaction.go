@@ -6,22 +6,23 @@ import (
 )
 
 type Transaction struct {
-	ID          string    // primary key, column name is `id`"
-	Valid       bool      // column name is `valid`"
-	Status      string    // column name is `status`"
-	Amount      int       // column name is `amount`"
-	AccountCode string    // column name is `account_code`"
-	TradeNo     string    // column name is `trade_no`"
-	Ip          string    // column name is `ip`"
-	Bank        string    // column name is `bank`"
-	BankCode    string    // column name is `bank_code`"
-	Time        string    // column name is `time`"
-	Message     string    // column name is `message`"
-	CodeNo      string    // column name is `code_no`"
-	StoreType   int       // column name is `store_type`"
-	StoreId     string    // column name is `store_id`"
-	Store       string    // column name is `store`"
-	CreatedAt   time.Time // column name is `created_at`"
+	ID          string    `json:"transactionId" gorm:"type:varchar(20);primary_key"`
+	Valid       bool      `json:"-"`
+	Status      string    `json:"status"`
+	Amount      int       `json:"amount"`
+	AccountCode string    `json:"accountCode"`
+	TradeNo     string    `json:"-"`
+	Ip          string    `json:"-"`
+	Bank        string    `json:"-"`
+	BankCode    string    `json:"-"`
+	Time        string    `json:"-"`
+	Message     string    `json:"message"`
+	CodeNo      string    `json:"-"`
+	StoreType   int       `json:"-"`
+	StoreId     string    `json:"-"`
+	Store       string    `json:"-"`
+	OrderID     string    `json:"-" gorm:"type:varchar(50)"`
+	CreatedAt   time.Time `json:"-"`
 	// UpdatedAt   time.Time // column name is `updated_at`"
 }
 

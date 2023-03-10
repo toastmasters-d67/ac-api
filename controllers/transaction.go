@@ -1,11 +1,12 @@
 package controllers
 
 import (
+	"api/helpers"
 	"api/models"
-	"api/pkg"
 	"errors"
 	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 
 	simplejson "github.com/bitly/go-simplejson"
@@ -15,7 +16,7 @@ import (
 )
 
 func NewTransactions() *Db {
-	db := pkg.InitDb()
+	db := helpers.InitDb()
 	db.AutoMigrate(&models.Transaction{})
 	return &Db{Db: db}
 }
@@ -24,9 +25,9 @@ func (db *Db) CreateTransaction(c *gin.Context) {
 	c.MultipartForm()
 	info := c.Request.PostForm["TradeInfo"][0]
 	sha := c.Request.PostForm["TradeSha"][0]
-	encoded := pkg.GetTradeSha(info)
+	encoded := helpers.GetTradeSha(info)
 	valid := sha == encoded
-	decoded := pkg.DecodeTradeInfo(info)
+	decoded := helpers.DecodeTradeInfo(info)
 
 	sj, err := simplejson.NewJson([]byte(decoded))
 	if err != nil {
@@ -36,12 +37,11 @@ func (db *Db) CreateTransaction(c *gin.Context) {
 	result := sj.Get("Result")
 
 	item := models.Transaction{}
-	item.ID = result.Get("MerchantOrderNo").MustString()
+	item.ID = result.Get("TradeNo").MustString()
 	item.Valid = valid
 	item.Status = sj.Get("Status").MustString()
 	item.Amount = result.Get("Amt").MustInt()
-	item.Message = pkg.DecodeUnicode(message)
-	item.TradeNo = result.Get("TradeNo").MustString()
+	item.Message = helpers.DecodeUnicode(message)
 	item.Ip = result.Get("IP").MustString()
 	item.Bank = result.Get("EscrowBank").MustString()
 	item.BankCode = result.Get("PayBankCode").MustString()
@@ -50,6 +50,7 @@ func (db *Db) CreateTransaction(c *gin.Context) {
 	item.CodeNo = result.Get("CodeNo").MustString()
 	item.StoreType = result.Get("StoreType").MustInt()
 	item.Store = result.Get("Store").MustString()
+	item.OrderID = result.Get("MerchantOrderNo").MustString()
 	fmt.Printf("item = %v \n", item)
 
 	err = models.CreateTransaction(db.Db, &item)
@@ -83,4 +84,13 @@ func (db *Db) GetTransaction(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, transaction)
+}
+
+func GetCallback(c *gin.Context) {
+	c.MultipartForm()
+	for key, value := range c.Request.PostForm {
+		fmt.Printf("%v = %v \n", key, value)
+	}
+	callback := os.Getenv("CALLBACK")
+	c.Redirect(http.StatusFound, callback)
 }
