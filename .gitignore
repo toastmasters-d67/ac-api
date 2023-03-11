@@ -6,6 +6,11 @@ api
 .env
 .env.local
 .env.*.local
+.env.kyogre
+.env.spinda
+
+# Test binary, built with `go test -c`
+*.test
 
 # Log files
 npm-debug.log*
