@@ -17,16 +17,15 @@ import (
 )
 
 func GetTradeInfo(params map[string]string) string {
-	key := os.Getenv("HASH_KEY")
-	iv := os.Getenv("HASH_IV")
+	key := os.Getenv("PAY_HASH_KEY")
+	iv := os.Getenv("PAY_HASH_IV")
 	param_str := HttpBuildQuery(params)
-	fmt.Printf("param_str: %v\n\n", param_str)
 	return Aes256(param_str, key, iv, aes.BlockSize)
 }
 
 func GetTradeSha(info string) string {
-	key := os.Getenv("HASH_KEY")
-	iv := os.Getenv("HASH_IV")
+	key := os.Getenv("PAY_HASH_KEY")
+	iv := os.Getenv("PAY_HASH_IV")
 	hash := "HashKey=" + key + "&" + info + "&HashIV=" + iv
 	h := sha256.New()
 	h.Write([]byte(hash))
@@ -54,8 +53,8 @@ func _UnescapeUnicodeCharactersInJSON(_jsonRaw json.RawMessage) (json.RawMessage
 }
 
 func DecodeTradeInfo(cipherText string) string {
-	key := os.Getenv("HASH_KEY")
-	iv := os.Getenv("HASH_IV")
+	key := os.Getenv("PAY_HASH_KEY")
+	iv := os.Getenv("PAY_HASH_IV")
 	return Aes256Decode(cipherText, key, iv)
 }
 

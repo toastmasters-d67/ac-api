@@ -91,6 +91,6 @@ func GetCallback(c *gin.Context) {
 	for key, value := range c.Request.PostForm {
 		fmt.Printf("%v = %v \n", key, value)
 	}
-	callback := os.Getenv("CALLBACK")
+	callback := os.Getenv("PAY_CALLBACK")
 	c.Redirect(http.StatusFound, callback)
 }

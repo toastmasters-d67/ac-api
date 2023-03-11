@@ -22,15 +22,14 @@ func NewOrders() *Db {
 }
 
 func (db *Db) CreateOrder(c *gin.Context) {
-	// _, email, ok := helpers.GetSession(c)
 	id, email, ok := helpers.GetSession(c)
 	if !ok {
 		c.JSON(http.StatusUnauthorized, gin.H{})
 		return
 	}
 
-	merchantID := os.Getenv("MERCHANT_ID")
-	version := os.Getenv("VERSION")
+	merchantID := os.Getenv("PAY_MERCHANT_ID")
+	version := os.Getenv("PAY_VERSION")
 	seconds := time.Now().UTC().UnixNano() / 1e9
 	timeStamp := strconv.FormatInt(seconds, 10)
 
@@ -73,12 +72,14 @@ func (db *Db) CreateOrder(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
+	url := os.Getenv("PAY_URL")
 	// c.JSON(http.StatusOK, order)
 	c.JSON(http.StatusOK, gin.H{
 		"merchantID": merchantID,
 		"version":    version,
 		"content":    content,
 		"sha":        sha,
+		"url":        url,
 	})
 }
 
