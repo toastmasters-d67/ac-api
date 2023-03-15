@@ -22,13 +22,28 @@ func (db *Db) CreateUser(c *gin.Context) {
 	c.BindJSON(&json)
 	fmt.Printf("json: %v\n\n", json)
 
+	record, err := models.GetUserByEmail(db.Db, json.Email)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+	if record.Email == json.Email {
+		fmt.Printf("CreateUser() record: %v\n\n", record)
+		fmt.Printf("CreateUser() record.Email: %v\n\n", record.Email)
+		c.JSON(409, gin.H{
+			"error": fmt.Sprintf("email found"),
+			// "error": fmt.Sprintf("email %s found", json.Email),
+		})
+		return
+	}
+
 	user := models.User{}
 	user.FirstName = json.FirstName
 	user.LastName = json.LastName
 	user.Email = json.Email
 	user.Password = helpers.GeneratePasswordHash(json.Password)
 
-	err := models.CreateUser(db.Db, &user)
+	err = models.CreateUser(db.Db, &user)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
