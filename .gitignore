@@ -6,8 +6,7 @@ api
 .env
 .env.local
 .env.*.local
-.env.kyogre
-.env.spinda
+.env.*
 
 # Test binary, built with `go test -c`
 *.test
