@@ -74,24 +74,31 @@ func (db *Db) AuthenticateUser(c *gin.Context) {
 	}
 	user, err := models.GetUserByEmail(db.Db, req.Email)
 	if err != nil {
-		fmt.Printf("AuthenticateUser() err: %v\n\n", err)
+		fmt.Printf("AuthenticateUser() GetUserByEmail err: %v\n\n", err)
 		c.JSON(http.StatusNotFound, gin.H{
 			"error": fmt.Sprintf("user %s not found", req.Email),
+		})
+		return
+	}
+	if user.Email != req.Email {
+		fmt.Printf("AuthenticateUser() GetUserByEmail: %v\n\n", user.Email)
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "incorrect account or password",
 		})
 		return
 	}
 	err = helpers.PasswordCompare(req.Password, user.Password)
 	// fmt.Println(err) // nil means it is a match
 	if err != nil {
-		fmt.Printf("AuthenticateUser() err: %v\n\n", err)
+		fmt.Printf("AuthenticateUser() PasswordCompare err: %v\n\n", err)
 		c.JSON(http.StatusUnauthorized, gin.H{
-			"error": "incorrect password",
+			"error": "incorrect account or password",
 		})
 		return
 	}
 	token, err := helpers.GenerateToken(*user)
 	if err != nil {
-		fmt.Printf("AuthenticateUser() err: %v\n\n", err)
+		fmt.Printf("AuthenticateUser() GenerateToken err: %v\n\n", err)
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"error": err.Error(),
 		})
