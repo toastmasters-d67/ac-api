@@ -31,7 +31,6 @@ func (model *User) BeforeCreate(db *gorm.DB) (err error) {
 	model.ID = uuid.New().String()
 	// model.IsVerified = false
 	model.CreatedAt = time.Now().In(loc)
-	// model.UpdatedAt = time.Now().In(loc)
 	return
 }
 
@@ -59,8 +58,7 @@ func GetUsers(db *gorm.DB, model *[]User) (err error) {
 
 func GetUserById(db *gorm.DB, id string) (*User, error) {
 	user := User{}
-	// if res := db.Where("id = ?", id).Find(&user); res.Error != nil {
-	if res := db.Preload("Orders").Preload("Orders.Transactions").Where("id = ?", id).Find(&user); res.Error != nil {
+	if res := db.Preload("Orders").Preload("Orders.Tickets").Preload("Orders.Transactions").Where("id = ?", id).Find(&user); res.Error != nil {
 		return nil, res.Error
 	}
 	return &user, nil
