@@ -29,10 +29,8 @@ func (db *Db) CreateUser(c *gin.Context) {
 	}
 	if record.Email == json.Email {
 		fmt.Printf("CreateUser() record: %v\n\n", record)
-		fmt.Printf("CreateUser() record.Email: %v\n\n", record.Email)
 		c.JSON(409, gin.H{
 			"error": fmt.Sprintf("email found"),
-			// "error": fmt.Sprintf("email %s found", json.Email),
 		})
 		return
 	}
@@ -72,6 +70,7 @@ func (db *Db) AuthenticateUser(c *gin.Context) {
 		})
 		return
 	}
+	fmt.Printf("AuthenticateUser() req: %v\n\n", req)
 	user, err := models.GetUserByEmail(db.Db, req.Email)
 	if err != nil {
 		fmt.Printf("AuthenticateUser() GetUserByEmail err: %v\n\n", err)
@@ -88,7 +87,6 @@ func (db *Db) AuthenticateUser(c *gin.Context) {
 		return
 	}
 	err = helpers.PasswordCompare(req.Password, user.Password)
-	// fmt.Println(err) // nil means it is a match
 	if err != nil {
 		fmt.Printf("AuthenticateUser() PasswordCompare err: %v\n\n", err)
 		c.JSON(http.StatusUnauthorized, gin.H{
@@ -110,8 +108,6 @@ func (db *Db) AuthenticateUser(c *gin.Context) {
 }
 
 func (db *Db) GetUser(c *gin.Context) {
-	fmt.Println("GetUser()")
-
 	id, _, ok := helpers.GetSession(c)
 	fmt.Printf("GetUser() id: %v\n\n", id)
 	if !ok {
@@ -120,7 +116,6 @@ func (db *Db) GetUser(c *gin.Context) {
 	}
 
 	user, err := models.GetUserById(db.Db, id)
-	fmt.Printf("GetUser() user: %v\n\n", user)
 	if err != nil {
 		fmt.Printf("GetUser() err: %v\n\n", err)
 		c.JSON(http.StatusInternalServerError, gin.H{})

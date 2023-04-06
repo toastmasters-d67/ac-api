@@ -35,7 +35,6 @@ func (db *Db) CreateOrder(c *gin.Context) {
 
 	json := models.Item{}
 	c.BindJSON(&json)
-	fmt.Printf("json: %v\n\n", json)
 	params := map[string]string{
 		"MerchantID":      merchantID,
 		"Version":         version,
@@ -61,9 +60,7 @@ func (db *Db) CreateOrder(c *gin.Context) {
 	order.Banquet = json.Banquet
 	order.UserID = id
 	order.Email = email
-	// order.Email = json.Email
 	order.Description = json.Description
-	// order.TransactionId = timeStamp
 	fmt.Printf("order: %v\n\n", order)
 
 	err := models.CreateOrder(db.Db, &order)
@@ -73,7 +70,6 @@ func (db *Db) CreateOrder(c *gin.Context) {
 		return
 	}
 	url := os.Getenv("PAY_URL")
-	// c.JSON(http.StatusOK, order)
 	c.JSON(http.StatusOK, gin.H{
 		"merchantID": merchantID,
 		"version":    version,
@@ -102,9 +98,8 @@ func (db *Db) GetOrders(c *gin.Context) {
 }
 
 func (db *Db) GetOrder(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	order := models.Order{}
-	err := models.GetOrder(db.Db, &order, id)
+	id := c.Param("id")
+	order, err := models.GetOrderById(db.Db, id)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.AbortWithStatus(http.StatusNotFound)
