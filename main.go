@@ -28,6 +28,7 @@ func SetupRouter() *gin.Engine {
 	Users := controllers.NewUsers()
 	Orders := controllers.NewOrders()
 	Transactions := controllers.NewTransactions()
+	Tickets := controllers.NewTickets()
 	r.POST("/api/v1/user", Users.CreateUser)
 	r.POST("/api/v1/login", Users.AuthenticateUser)
 	r.POST("/api/v1/notify", Transactions.CreateTransaction)
@@ -35,8 +36,11 @@ func SetupRouter() *gin.Engine {
 
 	r.Use(helpers.VerifyToken)
 	r.GET("/api/v1/user", Users.GetUser)
-	r.GET("/api/v1/order", Users.GetOrders)
 	r.POST("/api/v1/order", Orders.CreateOrder)
+	r.GET("/api/v1/orders/:id", Orders.GetOrder)
+	r.GET("/api/v1/order", Users.GetOrders)
+	r.GET("/api/v1/tickets/:id", Tickets.GetTickets)
+	r.POST("/api/v1/ticket", Tickets.CreateTicket)
 	return r
 }
 
