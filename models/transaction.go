@@ -21,15 +21,13 @@ type Transaction struct {
 	StoreType   int       `json:"-"`
 	StoreId     string    `json:"-"`
 	Store       string    `json:"-"`
-	OrderID     string    `json:"-" gorm:"type:varchar(50)"`
+	OrderID     string    `json:"-" gorm:"type:varchar(24)"`
 	CreatedAt   time.Time `json:"-"`
-	// UpdatedAt   time.Time // column name is `updated_at`"
 }
 
 func (model *Transaction) BeforeCreate(db *gorm.DB) (err error) {
 	loc, _ := time.LoadLocation("Asia/Taipei")
 	model.CreatedAt = time.Now().In(loc)
-	// model.UpdatedAt = time.Now().In(loc)
 	return
 }
 
