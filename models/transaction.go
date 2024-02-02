@@ -1,8 +1,10 @@
 package models
 
 import (
-	"gorm.io/gorm"
+	"os"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type Transaction struct {
@@ -26,7 +28,7 @@ type Transaction struct {
 }
 
 func (model *Transaction) BeforeCreate(db *gorm.DB) (err error) {
-	loc, _ := time.LoadLocation("Asia/Taipei")
+	loc, _ := time.LoadLocation(os.Getenv("DB_TIMEZONE"))
 	model.CreatedAt = time.Now().In(loc)
 	return
 }

@@ -1,10 +1,11 @@
 package models
 
 import (
-	"github.com/google/uuid"
-	"gorm.io/gorm"
 	"os"
 	"time"
+
+	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type Register struct {

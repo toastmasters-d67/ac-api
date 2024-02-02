@@ -1,9 +1,10 @@
 package models
 
 import (
-	"gorm.io/gorm"
 	"os"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type Ticket struct {
@@ -23,7 +24,7 @@ type Ticket struct {
 }
 
 func (model *Ticket) BeforeCreate(db *gorm.DB) (err error) {
-	loc, _ := time.LoadLocation("Asia/Taipei")
+	loc, _ := time.LoadLocation(os.Getenv("DB_TIMEZONE"))
 	model.CreatedAt = time.Now().In(loc)
 	return
 }

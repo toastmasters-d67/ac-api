@@ -4,9 +4,11 @@ import (
 	"api/helpers"
 	"api/models"
 	"fmt"
+	"net/http"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	_ "github.com/joho/godotenv/autoload"
-	"net/http"
 )
 
 func NewTickets() *Db {
@@ -24,7 +26,10 @@ func (db *Db) CreateTicket(c *gin.Context) {
 
 	json := []models.Ticket{}
 	c.BindJSON(&json)
-	fmt.Printf("json: %v\n\n", json)
+
+	escapedJson := strings.ReplaceAll(fmt.Sprintf("%v", json), "\n", "")
+	escapedJson = strings.ReplaceAll(escapedJson, "\r", "")
+	fmt.Printf("json: %v\n\n", escapedJson)
 
 	err := models.CreateTickets(db.Db, &json)
 	if err != nil {
@@ -36,7 +41,10 @@ func (db *Db) CreateTicket(c *gin.Context) {
 }
 
 func (db *Db) GetTickets(c *gin.Context) {
-	fmt.Printf("GetTickets() id: %v\n\n", c.Param("id"))
+	escapedId := strings.ReplaceAll(c.Param("id"), "\n", "")
+	escapedId = strings.ReplaceAll(escapedId, "\r", "")
+	fmt.Printf("GetTickets() id: %v\n\n", escapedId)
+
 	tickets := []models.Ticket{}
 	err := models.GetTickets(db.Db, &tickets, c.Param("id"))
 	if err != nil {

@@ -2,10 +2,11 @@ package helpers
 
 import (
 	"fmt"
+	"os"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
-	"os"
 )
 
 func InitDb() *gorm.DB {
