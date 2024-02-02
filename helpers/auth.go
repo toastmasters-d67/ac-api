@@ -4,12 +4,13 @@ import (
 	"api/models"
 	"errors"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt"
 	"net/http"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt"
 
 	_ "github.com/joho/godotenv/autoload"
 )
@@ -65,7 +66,9 @@ func validateToken(tokenString string) (string, string, error) {
 func VerifyToken(c *gin.Context) {
 	token, ok := getToken(c)
 	if !ok {
-		fmt.Printf("VerifyToken() token: %v\n\n", token)
+		escapedToken := strings.ReplaceAll(token, "\n", "")
+		escapedToken = strings.ReplaceAll(escapedToken, "\r", "")
+		fmt.Printf("VerifyToken() token: %v\n\n", escapedToken)
 		fmt.Printf("VerifyToken() ok: %v\n\n", ok)
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{})
 		return

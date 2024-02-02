@@ -5,6 +5,7 @@ import (
 	"api/models"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/joho/godotenv/autoload"
@@ -20,7 +21,10 @@ func (db *Db) CreateUser(c *gin.Context) {
 	fmt.Printf("CreateUser()\n\n")
 	json := models.Register{}
 	c.BindJSON(&json)
-	fmt.Printf("json: %v\n\n", json)
+
+	escapedJson := strings.ReplaceAll(fmt.Sprintf("%v", json), "\n", "")
+	escapedJson = strings.ReplaceAll(escapedJson, "\r", "")
+	fmt.Printf("json: %v\n\n", escapedJson)
 
 	record, err := models.GetUserByEmail(db.Db, json.Email)
 	if err != nil {
@@ -30,7 +34,7 @@ func (db *Db) CreateUser(c *gin.Context) {
 	if record.Email == json.Email {
 		fmt.Printf("CreateUser() record: %v\n\n", record)
 		c.JSON(409, gin.H{
-			"error": fmt.Sprintf("email found"),
+			"error": "email found",
 		})
 		return
 	}
@@ -70,7 +74,10 @@ func (db *Db) AuthenticateUser(c *gin.Context) {
 		})
 		return
 	}
-	fmt.Printf("AuthenticateUser() req: %v\n\n", req)
+	escapedReq := strings.ReplaceAll(fmt.Sprintf("%v", req), "\n", "")
+	escapedReq = strings.ReplaceAll(escapedReq, "\r", "")
+	fmt.Printf("AuthenticateUser() req: %v\n\n", escapedReq)
+
 	user, err := models.GetUserByEmail(db.Db, req.Email)
 	if err != nil {
 		fmt.Printf("AuthenticateUser() GetUserByEmail err: %v\n\n", err)

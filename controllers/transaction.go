@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 
 	simplejson "github.com/bitly/go-simplejson"
 	"github.com/gin-gonic/gin"
@@ -89,7 +90,9 @@ func (db *Db) GetTransaction(c *gin.Context) {
 func GetCallback(c *gin.Context) {
 	c.MultipartForm()
 	for key, value := range c.Request.PostForm {
-		fmt.Printf("%v = %v \n", key, value)
+		escapedValue := strings.ReplaceAll(fmt.Sprintf("%v", value), "\n", "")
+		escapedValue = strings.ReplaceAll(escapedValue, "\r", "")
+		fmt.Printf("%v = %v \n", key, escapedValue)
 	}
 	callback := os.Getenv("PAY_CALLBACK")
 	c.Redirect(http.StatusFound, callback)
