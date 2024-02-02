@@ -61,11 +61,11 @@ func (db *Db) CreateOrder(c *gin.Context) {
 	order.UserID = id
 	order.Email = email
 	order.Description = json.Description
-	fmt.Printf("order: %v\n\n", order)
+	fmt.Printf("order: %v\n", order)
 
 	err := models.CreateOrder(db.Db, &order)
 	if err != nil {
-		fmt.Printf("err: %v\n\n", err)
+		fmt.Printf("err: %v\n", err)
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
@@ -88,7 +88,7 @@ func (db *Db) GetOrders(c *gin.Context) {
 
 	orders, err := models.GetOrdersByEmail(db.Db, email)
 	if err != nil {
-		fmt.Printf("GetOrders() err: %v\n\n", err)
+		fmt.Printf("GetOrders() err: %v\n", err)
 		c.JSON(http.StatusInternalServerError, gin.H{})
 		return
 	}

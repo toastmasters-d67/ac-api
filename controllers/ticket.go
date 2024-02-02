@@ -29,7 +29,7 @@ func (db *Db) CreateTicket(c *gin.Context) {
 
 	escapedJson := strings.ReplaceAll(fmt.Sprintf("%v", json), "\n", "")
 	escapedJson = strings.ReplaceAll(escapedJson, "\r", "")
-	fmt.Printf("json: %v\n\n", escapedJson)
+	fmt.Printf("json: %v\n", escapedJson)
 
 	err := models.CreateTickets(db.Db, &json)
 	if err != nil {
@@ -43,7 +43,7 @@ func (db *Db) CreateTicket(c *gin.Context) {
 func (db *Db) GetTickets(c *gin.Context) {
 	escapedId := strings.ReplaceAll(c.Param("id"), "\n", "")
 	escapedId = strings.ReplaceAll(escapedId, "\r", "")
-	fmt.Printf("GetTickets() id: %v\n\n", escapedId)
+	fmt.Printf("GetTickets() id: %v\n", escapedId)
 
 	tickets := []models.Ticket{}
 	err := models.GetTickets(db.Db, &tickets, c.Param("id"))
@@ -51,6 +51,6 @@ func (db *Db) GetTickets(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
-	fmt.Printf("GetTickets() tickets: %v\n\n", tickets)
+	fmt.Printf("GetTickets() tickets: %v\n", tickets)
 	c.JSON(http.StatusOK, tickets)
 }

@@ -18,13 +18,13 @@ func NewUsers() *Db {
 }
 
 func (db *Db) CreateUser(c *gin.Context) {
-	fmt.Printf("CreateUser()\n\n")
+	fmt.Printf("CreateUser()\n")
 	json := models.Register{}
 	c.BindJSON(&json)
 
 	escapedJson := strings.ReplaceAll(fmt.Sprintf("%v", json), "\n", "")
 	escapedJson = strings.ReplaceAll(escapedJson, "\r", "")
-	fmt.Printf("json: %v\n\n", escapedJson)
+	fmt.Printf("json: %v\n", escapedJson)
 
 	record, err := models.GetUserByEmail(db.Db, json.Email)
 	if err != nil {
@@ -32,7 +32,7 @@ func (db *Db) CreateUser(c *gin.Context) {
 		return
 	}
 	if record.Email == json.Email {
-		fmt.Printf("CreateUser() record: %v\n\n", record)
+		fmt.Printf("CreateUser() record: %v\n", record)
 		c.JSON(409, gin.H{
 			"error": "email found",
 		})
@@ -76,18 +76,18 @@ func (db *Db) AuthenticateUser(c *gin.Context) {
 	}
 	escapedReq := strings.ReplaceAll(fmt.Sprintf("%v", req), "\n", "")
 	escapedReq = strings.ReplaceAll(escapedReq, "\r", "")
-	fmt.Printf("AuthenticateUser() req: %v\n\n", escapedReq)
+	fmt.Printf("AuthenticateUser() req: %v\n", escapedReq)
 
 	user, err := models.GetUserByEmail(db.Db, req.Email)
 	if err != nil {
-		fmt.Printf("AuthenticateUser() GetUserByEmail err: %v\n\n", err)
+		fmt.Printf("AuthenticateUser() GetUserByEmail err: %v\n", err)
 		c.JSON(http.StatusNotFound, gin.H{
 			"error": fmt.Sprintf("user %s not found", req.Email),
 		})
 		return
 	}
 	if user.Email != req.Email {
-		fmt.Printf("AuthenticateUser() GetUserByEmail: %v\n\n", user.Email)
+		fmt.Printf("AuthenticateUser() GetUserByEmail: %v\n", user.Email)
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"error": "incorrect account or password",
 		})
@@ -95,7 +95,7 @@ func (db *Db) AuthenticateUser(c *gin.Context) {
 	}
 	err = helpers.PasswordCompare(req.Password, user.Password)
 	if err != nil {
-		fmt.Printf("AuthenticateUser() PasswordCompare err: %v\n\n", err)
+		fmt.Printf("AuthenticateUser() PasswordCompare err: %v\n", err)
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"error": "incorrect account or password",
 		})
@@ -103,7 +103,7 @@ func (db *Db) AuthenticateUser(c *gin.Context) {
 	}
 	token, err := helpers.GenerateToken(*user)
 	if err != nil {
-		fmt.Printf("AuthenticateUser() GenerateToken err: %v\n\n", err)
+		fmt.Printf("AuthenticateUser() GenerateToken err: %v\n", err)
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"error": err.Error(),
 		})
@@ -116,7 +116,7 @@ func (db *Db) AuthenticateUser(c *gin.Context) {
 
 func (db *Db) GetUser(c *gin.Context) {
 	id, _, ok := helpers.GetSession(c)
-	fmt.Printf("GetUser() id: %v\n\n", id)
+	fmt.Printf("GetUser() id: %v\n", id)
 	if !ok {
 		c.JSON(http.StatusUnauthorized, gin.H{})
 		return
@@ -124,7 +124,7 @@ func (db *Db) GetUser(c *gin.Context) {
 
 	user, err := models.GetUserById(db.Db, id)
 	if err != nil {
-		fmt.Printf("GetUser() err: %v\n\n", err)
+		fmt.Printf("GetUser() err: %v\n", err)
 		c.JSON(http.StatusInternalServerError, gin.H{})
 		return
 	}
