@@ -50,7 +50,7 @@ func validateToken(tokenString string) (string, string, error) {
 		return jwtKey, nil
 	})
 	if err != nil {
-		fmt.Printf("validateToken() err: %v\n\n", err)
+		fmt.Printf("validateToken() err: %v\n", err)
 		return "", "", err
 	}
 
@@ -68,15 +68,15 @@ func VerifyToken(c *gin.Context) {
 	if !ok {
 		escapedToken := strings.ReplaceAll(token, "\n", "")
 		escapedToken = strings.ReplaceAll(escapedToken, "\r", "")
-		fmt.Printf("VerifyToken() token: %v\n\n", escapedToken)
-		fmt.Printf("VerifyToken() ok: %v\n\n", ok)
+		fmt.Printf("VerifyToken() token: %v\n", escapedToken)
+		fmt.Printf("VerifyToken() ok: %v\n", ok)
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{})
 		return
 	}
 
 	id, email, err := validateToken(token)
 	if err != nil {
-		fmt.Printf("VerifyToken() err: %v\n\n", err)
+		fmt.Printf("VerifyToken() err: %v\n", err)
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{})
 		return
 	}

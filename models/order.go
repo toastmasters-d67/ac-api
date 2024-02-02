@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"os"
 	"time"
 
@@ -27,6 +28,7 @@ type Order struct {
 
 func (model *Order) BeforeCreate(db *gorm.DB) (err error) {
 	loc, _ := time.LoadLocation(os.Getenv("DB_TIMEZONE"))
+	fmt.Printf("BeforeCreate: %v\n", loc)
 	model.CreatedAt = time.Now().In(loc)
 	return
 }
