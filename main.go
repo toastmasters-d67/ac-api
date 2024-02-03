@@ -29,6 +29,9 @@ func SetupRouter() *gin.Engine {
 	Orders := controllers.NewOrders()
 	Transactions := controllers.NewTransactions()
 	Tickets := controllers.NewTickets()
+	r.GET("/api/v1/ver", func(c *gin.Context) {
+		c.String(http.StatusOK, "v1.0.0-test2024")
+	})
 	r.POST("/api/v1/user", Users.CreateUser)
 	r.POST("/api/v1/login", Users.AuthenticateUser)
 	r.POST("/api/v1/notify", Transactions.CreateTransaction)
